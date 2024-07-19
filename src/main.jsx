@@ -14,6 +14,7 @@ import ActionsPage from './pages/ActionsPage.jsx';
 import UsersListPage from './pages/UsersListPage.jsx';
 import FormsPage from './pages/FormsPage.jsx';
 import BrandPage from './pages/BrandPage.jsx';
+import AddNewForm from './pages/AddNewForm.jsx';
 
 
 const router = createBrowserRouter(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
         <Route path='/usersList' element={<UsersListPage />} />
         <Route path='/forms' element={<FormsPage />} />
         <Route path='/brand' element={<BrandPage />} />
+        <Route path='/forms/new' element={<AddNewForm />} />
       </Route>
     </Route>
   )
