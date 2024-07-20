@@ -10,8 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 //Custom Imports
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useLoadFormsMutation } from '../slices/formsApiSlice';
-import { setFormsList } from '../slices/formsSlice';
+import { useLoadFormsMutation, useDeleteFormMutation } from '../slices/formsApiSlice';
+import { setFormsList, deleteForm } from '../slices/formsSlice';
 import { Link as RouterLink } from "react-router-dom";
 
 
@@ -51,6 +51,7 @@ export default function UsersListPage() {
     const { formsList } = useSelector((state) => state.forms);
     //API CALL
     const [getAllForms] = useLoadFormsMutation();
+    const [deleteForm] = useDeleteFormMutation();
 
     const getForms = async () => {
         const res = await getAllForms().unwrap();

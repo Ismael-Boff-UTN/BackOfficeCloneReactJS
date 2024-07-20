@@ -27,11 +27,14 @@ const authSlice = createSlice({
         updateUsersList: (state, action) => {
             state.usersList.users = [...state.usersList.users, action.payload];
         },
+        deleteUser: (state, action) => {
+            //state.usersList.users = [...state.usersList.users.filter((user) => user._id !== action.payload)];
+        },
 
 
     }
 });
 
-export const { setCredentials, logout, setUsersList, updateUsersList } = authSlice.actions;
+export const { setCredentials, logout, setUsersList, updateUsersList, deleteUser } = authSlice.actions;
 
 export default authSlice.reducer;

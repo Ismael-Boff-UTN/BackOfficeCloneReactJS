@@ -258,6 +258,7 @@ const AddNewForm = () => {
 
 
       <Button size="small" variant='contained' onClick={handleSaveForm}>Guardar Formulario</Button>
+      <Button size="small" variant='contained' style={{ marginLeft: "20px" }} onClick={()=> navigate("/forms")}>Cancelar</Button>
 
     </Container>
   )

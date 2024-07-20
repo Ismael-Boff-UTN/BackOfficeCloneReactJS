@@ -20,10 +20,24 @@ export const formsApiSlice = apiSlice.injectEndpoints({
                 body: data
             })
         }),
+        deleteForm: builder.mutation({
+            query: (data) => ({
+                url: `${FORMS_URL}/delete`,
+                method: "DELETE",
+                body: data
+            })
+        }),
+        updateForm: builder.mutation({
+            query: (data) => ({
+                url: `${FORMS_URL}/update`,
+                method: "PUT",
+                body: data
+            })
+        }),
     }),
 });
 
 
 //Usar el correcto standard para la exportacion useMutation, useQuery, etc..
-export const { useLoadFormsMutation, useCreateFormsMutation } = formsApiSlice;
+export const { useLoadFormsMutation, useCreateFormsMutation, useDeleteFormMutation, useUpdateFormMutation } = formsApiSlice;
 

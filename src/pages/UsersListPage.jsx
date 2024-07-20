@@ -4,56 +4,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
+import { Button, Chip, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PageviewIcon from '@mui/icons-material/Pageview';
+import EditIcon from '@mui/icons-material/Edit';
 //Custom Imports
 import AddNewUser from './AddNewUser';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLoadAllUsersMutation } from '../slices/userApiSlice';
-import { setUsersList } from '../slices/authSlice';
-
-
-
-const renderDetailsButton = (params) => {
-    return (
-        <strong>
-            <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: 16 }}
-
-            >
-                Editar
-            </Button>
-        </strong>
-    )
-}
-
-const columns = [
-    { field: '_id', headerName: 'ID', width: 70 },
-    { field: 'loginName', headerName: 'Usuario', width: 100 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    {
-        field: 'fullName',
-        headerName: 'Nombre Completo',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-    { field: 'isActive', headerName: 'Estado', type: "boolean", width: 70 },
-    {
-        field: 'language',
-        headerName: 'Idioma',
-        width: 90,
-    },
-    { field: 'roles', headerName: 'Roles', width: 130 },
-    { field: 'createdAt', headerName: 'Fecha Registro', width: 70 },
-    { field: 'updatedAt', headerName: 'Fecha Actualización', width: 70 },
-    ,
-    { field: 'opc', headerName: 'Opciones', width: 130, renderCell: renderDetailsButton, },
-
-];
+import { useLoadAllUsersMutation, useDeleteUserMutation } from '../slices/userApiSlice';
+import { setUsersList, deleteUser } from '../slices/authSlice';
+import { toast } from 'react-toastify';
 
 
 export default function UsersListPage() {
@@ -63,7 +23,8 @@ export default function UsersListPage() {
     const { usersList } = useSelector((state) => state.auth);
     //API CALL
     const [getAllUsers] = useLoadAllUsersMutation();
-    
+    const [deleteUser] = useDeleteUserMutation();
+
     const getUsers = async () => {
         const res = await getAllUsers().unwrap();
         dispatch(setUsersList(res));
@@ -74,7 +35,86 @@ export default function UsersListPage() {
     }, [])
 
 
+    const handleView = (event, cellValues) => {
+        console.log(cellValues.row);
+    };
 
+    const handleEdit = (event, cellValues) => {
+        console.log(cellValues.row);
+    };
+
+    const handleDelete = async (event, cellValues) => {
+        const res = await deleteUser({ _id: cellValues.row._id }).unwrap();
+        getUsers();//Temporal Lo Ideal Seria Modificar El State De Redux
+        toast.success(res.message);
+    };
+
+
+    const columns = [
+        { field: '_id', headerName: 'ID', width: 70 },
+        { field: 'loginName', headerName: 'Usuario', width: 100 },
+        { field: 'email', headerName: 'Email', width: 200 },
+        {
+            field: 'fullName',
+            headerName: 'Nombre Completo',
+            description: 'This column has a value getter and is not sortable.',
+            sortable: false,
+            width: 160,
+            valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+        },
+        { field: 'isActive', headerName: 'Estado', type: "boolean", width: 90 , renderCell: (cellValues) => {
+            return (
+                <>
+                 {cellValues.row.isActive === true ?   <Chip label="Activo" color="success" variant="filled" /> :  <Chip label="Banned" color="error" variant="filled" /> }
+                </>
+               
+              
+            );
+        }},
+        {
+            field: 'language',
+            headerName: 'Idioma',
+            width: 90,
+        },
+        { field: 'roles', headerName: 'Roles', width: 130 },
+        { field: 'createdAt', headerName: 'Fecha Registro', width: 70 },
+        { field: 'updatedAt', headerName: 'Fecha Actualización', width: 70 },
+        ,
+        {
+            field: 'opc', headerName: 'Editar', width: 60, renderCell: (cellValues) => {
+                return (
+                    <IconButton aria-label="edit" color='success' onClick={(event) => {
+                        handleEdit(event, cellValues);
+                    }}>
+                        <EditIcon />
+                    </IconButton>
+                );
+            }
+        },
+        {
+            field: 'opc2', headerName: 'Ver', width: 60, renderCell: (cellValues) => {
+                return (
+                    <IconButton aria-label="view" color='primary' onClick={(event) => {
+                        handleView(event, cellValues);
+                    }}>
+                        <PageviewIcon />
+                    </IconButton>
+                );
+            }
+        },
+        {
+            field: 'opc3', headerName: 'Eliminar', width: 70, renderCell: (cellValues) => {
+                return (
+                    <IconButton aria-label="delete" color='error' onClick={(event) => {
+                        handleDelete(event, cellValues);
+                    }}>
+                        <DeleteIcon />
+                    </IconButton>
+                );
+            }
+        }
+
+    ];
 
 
     return (
