@@ -25,11 +25,14 @@ const formsSlice = createSlice({
             // state.usersList.users = [...state.usersList.users, action.payload];
             state.formsList = [...state.formsList.filter((form) => form._id !== action.payload)];
         },
-
+        getFormById: (state, action) => {
+           
+            state.formsList = [...state.formsList.slice((form) => form._id === action.payload)];
+        },
 
     }
 });
 
-export const { setFormsList, clearFormsList, deleteForm } = formsSlice.actions;
+export const { setFormsList, clearFormsList, deleteForm, getFormById } = formsSlice.actions;
 
 export default formsSlice.reducer;

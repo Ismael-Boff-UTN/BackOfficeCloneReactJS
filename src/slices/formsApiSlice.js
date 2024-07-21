@@ -10,7 +10,6 @@ export const formsApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: `${FORMS_URL}/list`,
                 method: "GET",
-
             })
         }),
         createForms: builder.mutation({
@@ -34,10 +33,12 @@ export const formsApiSlice = apiSlice.injectEndpoints({
                 body: data
             })
         }),
+        getFormbyId: builder.query({ query: formId => `${FORMS_URL}/byId/${formId}` }),
+
     }),
 });
 
 
 //Usar el correcto standard para la exportacion useMutation, useQuery, etc..
-export const { useLoadFormsMutation, useCreateFormsMutation, useDeleteFormMutation, useUpdateFormMutation } = formsApiSlice;
+export const { useLoadFormsMutation, useCreateFormsMutation, useDeleteFormMutation, useUpdateFormMutation, useGetFormbyIdQuery } = formsApiSlice;
 

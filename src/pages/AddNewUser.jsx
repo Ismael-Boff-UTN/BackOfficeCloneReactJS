@@ -12,7 +12,7 @@ import { useTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import { useCreateUserMutation } from '../slices/userApiSlice';
 import { toast } from 'react-toastify';
-import { updateUsersList } from '../slices/authSlice';
+
 
 
 const ITEM_HEIGHT = 48;
@@ -61,8 +61,6 @@ export default function AddNewUser() {
 
     const [createNewUser] = useCreateUserMutation();
 
-
-    const dispatch = useDispatch();
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
@@ -119,11 +117,9 @@ export default function AddNewUser() {
                     roles
 
                 }).unwrap();
-                console.log(res.user);
-                dispatch(updateUsersList(res.user));
-
-                toast.success("Usuario Creado!");
                 setOpen(false);
+                toast.success("Usuario Creado!");
+
             } catch (err) {
                 toast.error(err?.data?.message || err.error,
                     {

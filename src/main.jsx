@@ -15,6 +15,7 @@ import UsersListPage from './pages/UsersListPage.jsx';
 import FormsPage from './pages/FormsPage.jsx';
 import BrandPage from './pages/BrandPage.jsx';
 import AddNewForm from './pages/AddNewForm.jsx';
+import TaskViewer from './components/TaskViewer.jsx';
 
 
 const router = createBrowserRouter(
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
         <Route path='/forms' element={<FormsPage />} />
         <Route path='/brand' element={<BrandPage />} />
         <Route path='/forms/new' element={<AddNewForm />} />
+        <Route path='/tasks/view/:id' element={<TaskViewer />} />
       </Route>
     </Route>
   )

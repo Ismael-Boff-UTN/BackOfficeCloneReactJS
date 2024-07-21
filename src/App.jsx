@@ -27,10 +27,12 @@ export default function App() {
       <CssBaseline />
       <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
       <ToastContainer />
-      <Box sx={{ bgcolor: 'background.default' }}>
+      <Box sx={{
+        bgcolor: 'background.default'
+      }}>
         <Outlet />
       </Box>
-      <Footer/>
+      <Footer />
 
     </ThemeProvider>
   );

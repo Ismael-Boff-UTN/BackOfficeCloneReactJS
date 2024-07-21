@@ -1,58 +1,43 @@
-import { React, useEffect } from 'react';
+import { React } from 'react';
 //MUI Imports
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Chip, IconButton } from '@mui/material';
+import { Chip, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PageviewIcon from '@mui/icons-material/Pageview';
+
 import EditIcon from '@mui/icons-material/Edit';
 //Custom Imports
 import AddNewUser from './AddNewUser';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLoadAllUsersMutation, useDeleteUserMutation } from '../slices/userApiSlice';
-import { setUsersList, deleteUser } from '../slices/authSlice';
+import { useGetUsersQuery, useDeleteUserMutation } from '../slices/userApiSlice';
 import { toast } from 'react-toastify';
+import UserView from "./UserView";
+import { Triangle } from 'react-loader-spinner'
+
 
 
 export default function UsersListPage() {
 
-    //REDUX
-    const dispatch = useDispatch();
-    const { usersList } = useSelector((state) => state.auth);
+
     //API CALL
-    const [getAllUsers] = useLoadAllUsersMutation();
-    const [deleteUser] = useDeleteUserMutation();
+    const { data, isLoading } = useGetUsersQuery();//Obtener Todos Los Usuarios
+    const [deleteUser] = useDeleteUserMutation();//Eliminar Usuario
 
-    const getUsers = async () => {
-        const res = await getAllUsers().unwrap();
-        dispatch(setUsersList(res));
-    }
-
-    useEffect(() => {
-        getUsers();
-    }, [])
-
-
-    const handleView = (event, cellValues) => {
-        console.log(cellValues.row);
-    };
 
     const handleEdit = (event, cellValues) => {
         console.log(cellValues.row);
     };
 
     const handleDelete = async (event, cellValues) => {
-        const res = await deleteUser({ _id: cellValues.row._id }).unwrap();
-        getUsers();//Temporal Lo Ideal Seria Modificar El State De Redux
+        const res = await deleteUser(cellValues.row._id).unwrap();
         toast.success(res.message);
     };
 
 
     const columns = [
         { field: '_id', headerName: 'ID', width: 70 },
-        { field: 'loginName', headerName: 'Usuario', width: 100 },
+        { field: "loginName", headerName: 'Usuario', width: 100 },
         { field: 'email', headerName: 'Email', width: 200 },
         {
             field: 'fullName',
@@ -62,21 +47,29 @@ export default function UsersListPage() {
             width: 160,
             valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
         },
-        { field: 'isActive', headerName: 'Estado', type: "boolean", width: 90 , renderCell: (cellValues) => {
-            return (
-                <>
-                 {cellValues.row.isActive === true ?   <Chip label="Activo" color="success" variant="filled" /> :  <Chip label="Banned" color="error" variant="filled" /> }
-                </>
-               
-              
-            );
-        }},
+        {
+            field: 'isActive', headerName: 'Estado', type: "boolean", width: 90, renderCell: (cellValues) => {
+                return (
+                    <>
+                        {cellValues.row.isActive === true ? <Chip label="Activo" color="success" variant="filled" /> : <Chip label="Banned" color="error" variant="filled" />}
+                    </>
+
+
+                );
+            }
+        },
         {
             field: 'language',
             headerName: 'Idioma',
             width: 90,
         },
-        { field: 'roles', headerName: 'Roles', width: 130 },
+        {
+            field: 'roles', headerName: 'Roles', width: 130, renderCell: (cellValues) => {
+                return (
+                    <Chip label={cellValues.row.roles} color="primary" variant="filled" />
+                );
+            }
+        },
         { field: 'createdAt', headerName: 'Fecha Registro', width: 70 },
         { field: 'updatedAt', headerName: 'Fecha Actualización', width: 70 },
         ,
@@ -94,11 +87,7 @@ export default function UsersListPage() {
         {
             field: 'opc2', headerName: 'Ver', width: 60, renderCell: (cellValues) => {
                 return (
-                    <IconButton aria-label="view" color='primary' onClick={(event) => {
-                        handleView(event, cellValues);
-                    }}>
-                        <PageviewIcon />
-                    </IconButton>
+                    <UserView state={cellValues.row} />
                 );
             }
         },
@@ -146,10 +135,10 @@ export default function UsersListPage() {
             </Box>
             <AddNewUser />
 
+            {!isLoading ? <><DataGrid
 
-            <DataGrid
                 getRowId={(row) => row._id}
-                rows={usersList?.users}
+                rows={data?.users}
                 columns={columns}
                 initialState={{
                     pagination: {
@@ -159,7 +148,8 @@ export default function UsersListPage() {
                 }}
                 pageSizeOptions={[5, 10]}
 
-            />
+            /></> : (<Triangle />)}
+
 
         </Container>
     );
